@@ -6,7 +6,6 @@ const { Tag, Product, ProductTag } = require('../../models');
 router.get('/', async (req, res) => {
   // find all tags
   // be sure to include its associated Product data
-
   try {
     const tagData = await Tag.findAll({
       include: [
@@ -25,7 +24,6 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   // find a single tag by its `id`
   // be sure to include its associated Product data
-
   try {
     const tagData = await Tag.findbyPK(req.params.id, {
       include: [
@@ -49,7 +47,7 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   // create a new tag
   try {
-    const tagData = await Tag.create(req.body);
+    const tagData = await Tag.create({tag_name: req.body.tag_name});
     res.status(200).json(tagData);
   } catch (err) {
     res.status(400).json(err);
@@ -59,16 +57,10 @@ router.post('/', async (req, res) => {
 router.put('/:id', (req, res) => {
   // update a tag's name by its `id` value
   Tag.update(
-    {
-      // All the fields you can update and the data attached to the request body.
-      tag_name: req.body.tag_name,
-    },
-    {
-      // Gets a tag based on the id given in the request parameters
-      where: {
-        id: req.params.id,
-      },
-    }
+    // All the fields you can update and the data attached to the request body.
+    {tag_name: req.body.tag_name},
+    // Gets a tag based on the id given in the request parameters
+    {where: {id: req.params.id,}}
   )
     .then((updatedTag) => {
       res.json(updatedTag);
